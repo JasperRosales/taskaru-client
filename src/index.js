@@ -3,6 +3,13 @@ const TaskManager = require('./taskManager');
 
 const program = new Command();
 
+// Helper function to create TaskManager instance
+function getTaskManager() {
+  const useServer = program.opts().server;
+  const serverUrl = program.opts().serverUrl || null;
+  return new TaskManager(useServer, serverUrl);
+}
+
 program
   .name('taskaru')
   .description('A CLI tool for task management with HTTP request capabilities')
@@ -18,11 +25,7 @@ program
   .option('-d, --description <description>', 'Task description')
   .action(async (options) => {
     try {
-      const useServer = program.opts().server;
-      if (program.opts().serverUrl) {
-        process.env.TASKARU_SERVER_URL = program.opts().serverUrl;
-      }
-      const manager = new TaskManager(useServer);
+      const manager = getTaskManager();
       const task = await manager.createTask({
         title: options.title,
         description: options.description || ''
@@ -45,11 +48,7 @@ program
   .option('-p, --pending', 'Show only pending tasks')
   .action(async (options) => {
     try {
-      const useServer = program.opts().server;
-      if (program.opts().serverUrl) {
-        process.env.TASKARU_SERVER_URL = program.opts().serverUrl;
-      }
-      const manager = new TaskManager(useServer);
+      const manager = getTaskManager();
       let tasks = await manager.getTasks();
       
       if (options.completed) {
@@ -86,11 +85,7 @@ program
   .description('Get details of a specific task')
   .action(async (id) => {
     try {
-      const useServer = program.opts().server;
-      if (program.opts().serverUrl) {
-        process.env.TASKARU_SERVER_URL = program.opts().serverUrl;
-      }
-      const manager = new TaskManager(useServer);
+      const manager = getTaskManager();
       const task = await manager.getTask(id);
       
       if (!task) {
@@ -121,17 +116,12 @@ program
   .option('-d, --description <description>', 'New task description')
   .action(async (id, options) => {
     try {
-      const useServer = program.opts().server;
-      if (program.opts().serverUrl) {
-        process.env.TASKARU_SERVER_URL = program.opts().serverUrl;
-      }
-      
       if (!options.title && !options.description) {
         console.error('✗ Please provide at least one field to update (--title or --description)');
         process.exit(1);
       }
 
-      const manager = new TaskManager(useServer);
+      const manager = getTaskManager();
       const updates = {};
       if (options.title) updates.title = options.title;
       if (options.description) updates.description = options.description;
@@ -153,11 +143,7 @@ program
   .description('Mark a task as completed')
   .action(async (id) => {
     try {
-      const useServer = program.opts().server;
-      if (program.opts().serverUrl) {
-        process.env.TASKARU_SERVER_URL = program.opts().serverUrl;
-      }
-      const manager = new TaskManager(useServer);
+      const manager = getTaskManager();
       const task = await manager.completeTask(id);
       console.log(`✓ Task ${task.id} marked as completed`);
     } catch (error) {
@@ -172,11 +158,7 @@ program
   .description('Delete a task')
   .action(async (id) => {
     try {
-      const useServer = program.opts().server;
-      if (program.opts().serverUrl) {
-        process.env.TASKARU_SERVER_URL = program.opts().serverUrl;
-      }
-      const manager = new TaskManager(useServer);
+      const manager = getTaskManager();
       await manager.deleteTask(id);
       console.log(`✓ Task ${id} deleted successfully`);
     } catch (error) {

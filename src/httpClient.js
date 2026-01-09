@@ -1,9 +1,10 @@
 const axios = require('axios');
 
 class HttpClient {
-  constructor(baseURL = process.env.TASKARU_SERVER_URL || 'http://localhost:3000') {
+  constructor(baseURL = null) {
+    const url = baseURL || process.env.TASKARU_SERVER_URL || 'http://localhost:3000';
     this.client = axios.create({
-      baseURL,
+      baseURL: url,
       timeout: 5000,
       headers: {
         'Content-Type': 'application/json'

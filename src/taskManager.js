@@ -2,9 +2,9 @@ const HttpClient = require('./httpClient');
 const LocalStorage = require('./localStorage');
 
 class TaskManager {
-  constructor(useServer = false) {
+  constructor(useServer = false, serverUrl = null) {
     this.useServer = useServer;
-    this.httpClient = new HttpClient();
+    this.httpClient = new HttpClient(serverUrl);
     this.localStorage = new LocalStorage();
   }
 
