@@ -1,0 +1,25 @@
+{
+  "name": "taskaru-client",
+  "version": "1.0.0",
+  "description": "A CLI tool for task management with HTTP request capabilities",
+  "main": "src/index.js",
+  "bin": {
+    "taskaru": "./bin/taskaru.js"
+  },
+  "scripts": {
+    "start": "node bin/taskaru.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "cli",
+    "task",
+    "management",
+    "todo"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.13.2",
+    "commander": "^14.0.2"
+  }
+}
