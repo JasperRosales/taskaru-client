@@ -1,0 +1,13 @@
+{
+  "$schema": "https://wails.io/schemas/config.v2.json",
+  "name": "taskaru",
+  "outputfilename": "taskaru",
+  "frontend:install": "npm install",
+  "frontend:build": "npm run build",
+  "frontend:dev:watcher": "npm run dev",
+  "frontend:dev:serverUrl": "auto",
+  "author": {
+    "name": "JasperRosales",
+    "email": "23-19300@g.batstate-u.edu.ph"
+  }
+}

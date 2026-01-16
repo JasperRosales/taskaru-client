@@ -1,60 +1,36 @@
 package main
 
 import (
-	"fmt"
-	"os"
+	"embed"
 
-	tea "github.com/charmbracelet/bubbletea"
+	"github.com/wailsapp/wails/v2"
+	"github.com/wailsapp/wails/v2/pkg/options"
+	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 )
 
-type model struct {
-	title  string
-	cursor int
-}
-
-func (m model) Init() tea.Cmd {
-	return nil
-}
-
-func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	switch msg.(type) {
-	case tea.KeyMsg:
-		return m, tea.Quit
-	}
-	return m, nil
-}
-
-func (m model) View() string {
-	s := fmt.Sprintf(`==================================
-  Taskaru - Task Manager
-==================================
-
-Welcome to Taskaru Task Manager!
-
-This is your task management terminal interface.
-
-Available commands:
-  > help  - Show available commands
-  > list  - List tasks
-  > add   - Add a new task
-  > quit  - Exit the application
-
-==================================
-
-Press any key to exit...
-
-`)
-	return s
-}
+//go:embed all:frontend/dist
+var assets embed.FS
 
 func main() {
-	p := tea.NewProgram(
-		model{title: "Taskaru"},
-		tea.WithAltScreen(),
-	)
+	// Create an instance of the app structure
+	app := NewApp()
 
-	if _, err := p.Run(); err != nil {
-		fmt.Printf("Error running application: %v\n", err)
-		os.Exit(1)
+	// Create application with options
+	err := wails.Run(&options.App{
+		Title:  "taskaru",
+		Width:  1024,
+		Height: 768,
+		AssetServer: &assetserver.Options{
+			Assets: assets,
+		},
+		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
+		OnStartup:        app.startup,
+		Bind: []interface{}{
+			app,
+		},
+	})
+
+	if err != nil {
+		println("Error:", err.Error())
 	}
 }
